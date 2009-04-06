@@ -1,14 +1,15 @@
 require 'test_helper'
 
 describe 'Sequel::Web' do
-  before do
-    def app
-      Sequel::Web::App.set(:environment => :test,
-      :run => false,
-      :raise_errors => true,
-      :logging => false
-      )
-      Sequel::Web::App.new
+  before do    
+    # set up temporary database
+    File.unlink('/tmp/test_db.db')
+    DB = Sequel.connect('sqlite:///tmp/test_db.db')
+    DB.create_table :items do
+      primary_key :id
+      String :name, :unique => true, :null => false
+      boolean :active, :default => true
+      Time :created_at
     end
   end
 
@@ -24,86 +25,132 @@ describe 'Sequel::Web' do
       end
 
       it 'displays form for connecting to a database' do
-        
+        body.should.have_element 'form#connect_form'
       end
 
     end
 
     describe 'post /connect' do
       describe 'with legitimate credentials' do
+        before do
+          post '/connect', :connection => {:type => 'sqlite', :path => '/tmp/test_db.db'}
+        end
 
         it 'adds to database list in current class' do
-
+          Sequel::Web::App.databases.should.be.instance_of Hash
+          Sequel::Web::App.databases.first.should.be.instance_of Sequel::Database
         end
 
         it 'redirects to database index' do
-
+          last_response.should.be.redirect
         end        
       end
 
       describe 'with illegitimate credentials' do
+        before do
+          post '/connect', :connection => {:adapter => 'sqlite', :database => '/tmp/test_db.db'}
+        end
 
         it 'should redirect to index' do
-
+          last_response.should.be.redirect_to '/'
         end
 
         it 'should put error in flash session' do
-
+          should.flunk
         end
       end      
     end
-    
-    describe 'get /database' do
-      
-      describe 'with a valid DB hash' do
-        
-        it 'displays list of tables' do
-          
+
+    describe 'after connecting to a database' do
+      before do
+        Sequel::Web.connect(:adapter => 'sqlite', :database => '/tmp/test_db.db')
+        @db_key = Sequel::Web.databases.keys.first
+      end
+
+      describe 'get /database' do
+
+        describe 'with a valid DB hash' do
+          before do
+            get "/database/#{@db_key}"
+          end
+
+          it 'displays list of tables' do
+            body.should.have_element '#tables td a', 'items'
+          end
+
+          it 'displays menu' do
+            body.should.have_element '#db_menu'
+          end
+
+        end
+
+        describe 'get /database/table' do
+          describe 'with an existing table' do
+            before do
+              get "/database/#{@db_key}/items"
+            end
+
+            it 'displays paginated table of rows' do
+              body.should.have_element 'table#items'
+              body.should.have_element '.pagination'
+            end
+
+            it 'displays menu' do
+              body.should.have_element '#db_menu'
+            end
+          end
+
         end
         
-        it 'displays menu' do
+        describe 'with a non existing table' do
+          before do
+            get "/database/#{@db_key}/items"
+          end
           
+          it 'is a 404' do
+            last_response.should.be 404
+          end
         end
-        
-      end
-      
-    end
-    
-    describe 'get /database/table' do
-      
-      it 'displays paginated table of rows' do
-        
-      end
-      
-      it 'displays menu' do
-        
-      end
-      
-    end
-    
-    describe 'get /database/table/row' do
-      it 'displays details for that row' do
-        
-      end
-      
-      it 'has form for editing the row' do
-        
-      end
-    end
-    
-    describe 'get /database/query' do
-      it 'displays form for entering sql' do
-        
-      end
-    end
-    
-    describe 'post /database/query' do
-      it 'shows original query in form' do
-        
-      end
-      
-      it 'shows table with results' do
-        
+
+        describe 'get /database/table/row' do
+          it 'displays details for that row' do
+
+          end
+
+          it 'has form for editing the row' do
+
+          end
+        end
+
+        describe 'PUT /database/table/row' do
+          it 'updates details for that row' do
+
+          end
+
+          it 'has flash message' do
+            
+          end
+          
+          it 'displays form with updated data' do
+
+          end
+        end
+
+        describe 'get /database/query' do
+          it 'displays form for entering sql' do
+
+          end
+        end
+
+        describe 'post /database/query' do
+          it 'shows original query in form' do
+
+          end
+
+          it 'shows table with results' do
+
+          end
+        end
       end
     end
   end
