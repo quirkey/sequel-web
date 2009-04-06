@@ -1,2 +1,11 @@
-%p Hello!
-%p Default sinatra-gen index (generated at Mon Apr 06 14:31:44 -0400 2009)
+%h2 Connect to a Database
+%form#connect_form{:method => 'POST', :action => 'connect'}
+  %select{:name => 'adapter'}
+    %option{:value => 'sqlite'} SQLite
+    %option{:value => 'mysql'} MySQL
+    %option{:value => 'postgres'} PostgreSQL
+  = text_field('host')
+  = text_field('username')
+  = text_field('password')
+  = text_field('database')
+  %input{:type => 'submit', :value => 'Connect'}

@@ -11,7 +11,7 @@ describe 'Sequel::Web' do
       boolean :active, :default => true
       Time :created_at
     end
-    db[:items].insert({:id => 1})
+    db[:items].insert({:id => 1, :name => 'test', :active => true, :created_at => Time.now})
   end
 
   describe 'App' do
@@ -26,7 +26,7 @@ describe 'Sequel::Web' do
       end
 
       it 'displays form for connecting to a database' do
-        body.should have_element('form#connect_form') 
+        body.should.have_element('form#connect_form') 
       end
 
     end
@@ -34,16 +34,18 @@ describe 'Sequel::Web' do
     describe 'post /connect' do
       describe 'with legitimate credentials' do
         before do
-          post '/connect', :connection => {:type => 'sqlite', :path => '/tmp/test_db.db'}
+          post '/connect', :connection => {:adapter => 'sqlite', :database => '/tmp/test_db.db'}
         end
 
         it 'adds to database list in current class' do
           Sequel::Web::App.databases.should.be.instance_of Hash
+          puts Sequel::Web::App.databases.inspect
           Sequel::Web::App.databases.values.first.should.be.instance_of Sequel::Database
         end
 
         it 'redirects to database index' do
           last_response.should.be.redirect
+          last_response.location.should.match /\/database\/[a-z09]/
         end        
       end
 
@@ -76,11 +78,11 @@ describe 'Sequel::Web' do
           end
 
           it 'displays list of tables' do
-            body.should have_element('#tables td a', 'items')
+            body.should.have_element('#tables td a', 'items')
           end
 
           it 'displays menu' do
-            body.should have_element('#db_menu')
+            body.should.have_element('#db_menu')
           end
 
         end
@@ -92,12 +94,12 @@ describe 'Sequel::Web' do
             end
 
             it 'displays paginated table of rows' do
-              body.should have_element('table#items')
-              body.should have_element('.pagination')
+              body.should.have_element('table#items')
+              body.should.have_element('.pagination')
             end
 
             it 'displays menu' do
-              body.should have_element('#db_menu')
+              body.should.have_element('#db_menu')
             end
           end
 
@@ -107,7 +109,7 @@ describe 'Sequel::Web' do
             end
 
             it 'is a 404' do
-              last_response.should.be.error
+              last_response.should.be.not_found
             end
           end
         end
