@@ -21,7 +21,7 @@ module TestHelper
   end
   
   def body
-    last_response.body
+    last_response.body.to_s
   end
   
   def instance_of(klass)

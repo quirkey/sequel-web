@@ -4,13 +4,14 @@ describe 'Sequel::Web' do
   before do    
     # set up temporary database
     File.unlink('/tmp/test_db.db')
-    DB = Sequel.connect('sqlite:///tmp/test_db.db')
-    DB.create_table :items do
+    db = Sequel.connect('sqlite:///tmp/test_db.db')
+    db.create_table :items do
       primary_key :id
       String :name, :unique => true, :null => false
       boolean :active, :default => true
       Time :created_at
     end
+    db[:items].insert({:id => 1})
   end
 
   describe 'App' do
@@ -25,7 +26,7 @@ describe 'Sequel::Web' do
       end
 
       it 'displays form for connecting to a database' do
-        body.should.have_element 'form#connect_form'
+        body.should have_element('form#connect_form') 
       end
 
     end
@@ -38,7 +39,7 @@ describe 'Sequel::Web' do
 
         it 'adds to database list in current class' do
           Sequel::Web::App.databases.should.be.instance_of Hash
-          Sequel::Web::App.databases.first.should.be.instance_of Sequel::Database
+          Sequel::Web::App.databases.values.first.should.be.instance_of Sequel::Database
         end
 
         it 'redirects to database index' do
@@ -52,7 +53,7 @@ describe 'Sequel::Web' do
         end
 
         it 'should redirect to index' do
-          last_response.should.be.redirect_to '/'
+          last_response.should.be.redirect
         end
 
         it 'should put error in flash session' do
@@ -63,8 +64,8 @@ describe 'Sequel::Web' do
 
     describe 'after connecting to a database' do
       before do
-        Sequel::Web.connect(:adapter => 'sqlite', :database => '/tmp/test_db.db')
-        @db_key = Sequel::Web.databases.keys.first
+        Sequel::Web::App.connect(:adapter => 'sqlite', :database => '/tmp/test_db.db')
+        @db_key = Sequel::Web::App.databases.keys.first
       end
 
       describe 'get /database' do
@@ -75,11 +76,11 @@ describe 'Sequel::Web' do
           end
 
           it 'displays list of tables' do
-            body.should.have_element '#tables td a', 'items'
+            body.should have_element('#tables td a', 'items')
           end
 
           it 'displays menu' do
-            body.should.have_element '#db_menu'
+            body.should have_element('#db_menu')
           end
 
         end
@@ -91,24 +92,31 @@ describe 'Sequel::Web' do
             end
 
             it 'displays paginated table of rows' do
-              body.should.have_element 'table#items'
-              body.should.have_element '.pagination'
+              body.should have_element('table#items')
+              body.should have_element('.pagination')
             end
 
             it 'displays menu' do
-              body.should.have_element '#db_menu'
+              body.should have_element('#db_menu')
             end
           end
 
+          describe 'with a non existing table' do
+            before do
+              get "/database/#{@db_key}/items"
+            end
+
+            it 'is a 404' do
+              last_response.should.be.error
+            end
+          end
         end
         
-        describe 'with a non existing table' do
-          before do
-            get "/database/#{@db_key}/items"
-          end
+
+        describe 'get /database/table/schema' do
           
-          it 'is a 404' do
-            last_response.should.be 404
+          it 'should display schema as table' do
+            
           end
         end
 
