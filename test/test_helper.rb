@@ -1,3 +1,8 @@
+require 'rubygems'
+require 'bacon'
 require 'sinatra'
-require 'sinatra/test/bacon'
-require File.join(File.dirname(__FILE__), '..', 'sequel-web.rb')
+require 'rack/test'
+
+require File.join(File.dirname(__FILE__), '..', 'lib', 'sequel-web.rb')
+
+Bacon::Context.send(:include, Rack::Test::Methods)
