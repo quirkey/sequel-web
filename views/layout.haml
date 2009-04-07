@@ -3,4 +3,8 @@
     %meta{'http-equiv' => "Content-Type", 'content' => "text/html; charset=utf-8"}
     %title sequel-web
   %body
+    - [:warning, :message].each do |flash_type|    
+      - if message = flash[flash_type]
+        .flash{:class => flash_type.to_s}
+          = message
     = yield

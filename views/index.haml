@@ -1,11 +1,11 @@
 %h2 Connect to a Database
 %form#connect_form{:method => 'POST', :action => 'connect'}
-  %select{:name => 'adapter'}
+  %select{:name => 'connection[adapter]'}
     %option{:value => 'sqlite'} SQLite
     %option{:value => 'mysql'} MySQL
     %option{:value => 'postgres'} PostgreSQL
-  = text_field('host')
-  = text_field('username')
-  = text_field('password')
-  = text_field('database')
+  = text_field('connection[host]', :title => 'Host')
+  = text_field('connection[username]', :title => 'Username')
+  = text_field('connection[password]', :title => 'Password')
+  = text_field('connection[database]', :title => 'Database')
   %input{:type => 'submit', :value => 'Connect'}
