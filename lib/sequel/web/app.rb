@@ -1,10 +1,10 @@
-require 'digest/sha1'
 require 'rack-flash'
 
 module Sequel
   module Web
     class App < ::Sinatra::Default
-
+      register ViewHelpers
+      
       set :sessions, true
       use Rack::Flash      
       
@@ -25,14 +25,13 @@ module Sequel
       end
       
       post '/connect' do
-        # begin
+        begin
           key = self.class.connect(params[:connection])
           redirect "/database/#{key}"
-        # rescue => e
+        rescue => e
           flash[:warning] = "Error with connection: #{e}"
-          # put message in flash
           redirect '/'
-        # end
+        end
       end
       
       get '/database/:key' do
@@ -49,10 +48,10 @@ module Sequel
         
         def connect(conn_string)
           db     = Sequel.connect(conn_string)
+          db_key = Digest::SHA1.hexdigest(db.to_s)
           tables = db.tables
-          key    = Digest::SHA1.hexdigest(conn_string.to_s)
-          self.databases[key] = db
-          key
+          self.databases[db_key] = db
+          db_key
         end
         
       end

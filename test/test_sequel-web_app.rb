@@ -3,8 +3,9 @@ require 'test_helper'
 describe 'Sequel::Web' do
   before do    
     # set up temporary database
-    File.unlink('/tmp/test_db.db')
-    db = Sequel.connect('sqlite:///tmp/test_db.db')
+    @test_db_path = '/tmp/test_db.db'
+    File.unlink(@test_db_path) if File.readable?(@test_db_path)
+    db = Sequel.connect("sqlite://#{@test_db_path}")
     db.create_table :items do
       primary_key :id
       String :name, :unique => true, :null => false
