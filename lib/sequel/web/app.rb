@@ -19,19 +19,14 @@ module Sequel
         html << "<input type='text' name='#{name}' value='#{value}' /></p>"
         html 
       end
-          
+                
       get '/' do
         haml :index
       end
       
       post '/connect' do
-        begin
-          key = self.class.connect(params[:connection])
-          redirect "/database/#{key}"
-        rescue => e
-          flash[:warning] = "Error with connection: #{e}"
-          redirect '/'
-        end
+        key = connect(params[:connection])
+        redirect "/database/#{key}"
       end
       
       get '/database/:key' do
@@ -39,28 +34,31 @@ module Sequel
         @tables = @db.tables
         haml :database
       end
+          
       
-      class << self
-        
-        def databases
-          @@databases ||= {}
-        end
-        
-        def connect(conn_string)
-          db     = Sequel.connect(conn_string)
-          db_key = Digest::SHA1.hexdigest(db.to_s)
-          tables = db.tables
-          self.databases[db_key] = db
-          db_key
-        end
-        
+      def session
+        @_session ||= env['rack.session']
+      end        
+      
+      def databases
+        session[:databases] ||= {}
       end
       
-      
-      private
+      def connect(conn_string)
+        @db     = Sequel.connect(conn_string)
+        raise "Could not connect to database with credentials provided" unless @db
+        db_key = Digest::SHA1.hexdigest(@db.to_s)[0...10]
+        self.databases[db_key] = {}.merge(conn_string)
+        db_key
+      rescue => e
+        flash[:warning] = "Error with connection: #{e}"
+        redirect '/'
+      end
+            
       def load_database
-        @db = self.class.databases[params[:key]]
+        connect(databases[params[:key]])
         not_found unless @db
+        @db
       end
     end
   end
