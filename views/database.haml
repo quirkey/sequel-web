@@ -1,3 +1,4 @@
 =haml 'db_menu', :layout => false
-%p
-  Test
+%ul#tables
+  - @tables.each do |table|
+    %li= table

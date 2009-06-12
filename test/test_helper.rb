@@ -5,17 +5,25 @@ require 'rack/test'
 
 require File.join(File.dirname(__FILE__), '..', 'lib', 'sequel-web.rb')
 
-Bacon::Context.send(:include, Rack::Test::Methods)
-
 require 'nokogiri'
 
+class Rack::Test::Session
+
+  protected
+  def default_env
+    { "rack.test" => true, "REMOTE_ADDR" => "127.0.0.1", 'rack.session' => {}}.merge(@headers)
+  end
+end
+
 module TestHelper
+
   def app
     Sequel::Web::App.set(
     :environment => :test,
     :run => false,
     :raise_errors => true,
-    :logging => false
+    :logging => false,
+    :sessions => true
     )
     Sequel::Web::App.new
   end
@@ -62,6 +70,8 @@ module TestHelper
   def html_body
     body =~ /^\<html/ ? body : "<html><body>#{body}</body></html>"
   end
+
+  include Rack::Test::Methods
 
 end
 

@@ -34,7 +34,8 @@ module Sequel
         @tables = @db.tables
         haml :database
       end
-          
+      
+      protected
       
       def session
         @_session ||= env['rack.session']
@@ -60,6 +61,7 @@ module Sequel
         not_found unless @db
         @db
       end
+      
     end
   end
 end

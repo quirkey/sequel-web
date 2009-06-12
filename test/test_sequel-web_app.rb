@@ -38,15 +38,9 @@ describe 'Sequel::Web' do
           post '/connect', :connection => {:adapter => 'sqlite', :database => '/tmp/test_db.db'}
         end
 
-        it 'adds to database list in current class' do
-          Sequel::Web::App.databases.should.be.instance_of Hash
-          puts Sequel::Web::App.databases.inspect
-          Sequel::Web::App.databases.values.first.should.be.instance_of Sequel::Database
-        end
-
         it 'redirects to database index' do
           last_response.should.be.redirect
-          last_response.location.should.match /\/database\/[a-z09]/
+          last_response.location.should.match /database\/[\w\d]+/
         end        
       end
 
@@ -60,15 +54,15 @@ describe 'Sequel::Web' do
         end
 
         it 'should put error in flash session' do
-          should.flunk
+          last_request.env['rack.session'][:__FLASH__][:warning].should.match(/Error/)
         end
       end      
     end
 
     describe 'after connecting to a database' do
       before do
-        Sequel::Web::App.connect(:adapter => 'sqlite', :database => '/tmp/test_db.db')
-        @db_key = Sequel::Web::App.databases.keys.first
+        post '/connect', :connection => {:adapter => 'sqlite', :database => '/tmp/test_db.db'}
+        @db_key = last_response['Location'].gsub(/\/database\//,'')
       end
 
       describe 'get /database' do

@@ -2,6 +2,7 @@ require 'rubygems'
 require 'sequel'
 require 'sinatra'
 require 'active_support'
+require 'haml'
 
 require 'digest/sha1'
 
