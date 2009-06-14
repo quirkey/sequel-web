@@ -2,9 +2,9 @@ require 'rack-flash'
 
 module Sequel
   module Web
-    class App < ::Sinatra::Default
+    class App < ::Sinatra::Application
+
       include ViewHelpers
-      
       include WillPaginate::ViewHelpers
       
       set :sessions, true
@@ -24,7 +24,12 @@ module Sequel
       def database_link(text, db_key, path)
         %{<a href='#{database_url(db_key, path)}'>#{text}</a>}
       end
-                      
+                  
+      get '/stylesheets/styles.css' do
+        content_type 'text/css'
+        sass :styles
+      end
+          
       get '/' do
         haml :index
       end

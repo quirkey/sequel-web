@@ -3,6 +3,11 @@
   %head
     %meta{'http-equiv' => "Content-Type", 'content' => "text/html; charset=utf-8"}
     %title sequel-web
+    
+    %link{:rel => 'stylesheet', :type => 'text/css', :href => '/stylesheets/styles.css', :media => 'screen'}
+    
+    - ['json2', 'jquery-1.3.1.min', 'jquery.cookies.2.0.1', 'qtable'].each do |src|
+      %script{:src => "/javascripts/#{src}.js", :type => 'text/javascript'}
   %body
     - [:warning, :message].each do |flash_type|    
       - if message = flash[flash_type]
