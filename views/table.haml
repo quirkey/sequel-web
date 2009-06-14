@@ -1,0 +1,12 @@
+%table.dataset
+  %thead
+    %tr
+    - @table.columns.each do |column|
+      %th=column
+  %tbody
+    - @rows.each do |row|
+      %tr.data_item
+        - @table.columns.each do |column|
+          %td=row[column]
+
+=will_paginate(@rows)

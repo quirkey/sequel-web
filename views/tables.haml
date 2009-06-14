@@ -1,0 +1,4 @@
+%ul#tables
+  - @tables.each do |table|
+    %li
+      %a{:href => database_url(@db_key, "tables/#{table}")}= table

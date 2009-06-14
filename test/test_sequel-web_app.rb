@@ -85,11 +85,11 @@ describe 'Sequel::Web' do
         describe 'get /database/table' do
           describe 'with an existing table' do
             before do
-              get "/database/#{@db_key}/items"
+              get "/database/#{@db_key}/tables/items"
             end
 
             it 'displays paginated table of rows' do
-              body.should.have_element('table#items')
+              body.should.have_element('table.dataset')
               body.should.have_element('.pagination')
             end
 
@@ -100,7 +100,7 @@ describe 'Sequel::Web' do
 
           describe 'with a non existing table' do
             before do
-              get "/database/#{@db_key}/items"
+              get "/database/#{@db_key}/tables/blah"
             end
 
             it 'is a 404' do

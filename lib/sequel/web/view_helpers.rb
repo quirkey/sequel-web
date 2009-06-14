@@ -15,22 +15,27 @@ module Sequel
       def link_to(text, link = nil, options = {})         
         link ||= text
         link = url_for(link)
-        content_tag :a, text, {:href => link}.merge(options)
+        content_tag(:a, text, {:href => link}.merge(options))
       end
 
-      def db_url(database, additional_path = '')
-        "/database/#{database.key}#{additional_path}"
+      def text_field(name, options = {})
+        title = options[:title] || name.humanize
+        value = options[:value] || ''
+        html = "<p>"
+        html << "<label for='#{name}'>#{title}</label>"
+        html << "<input type='text' name='#{name}' value='#{value}' /></p>"
+        html 
       end
 
       def url_for(link_options)
-        case link_options
-        when Hash
-          path = link_options.delete(:path) || request.path_info
-          params.delete('captures')
-          path + '?' + build_query(params.merge(link_options))
-        else
-          link_options
-        end
+        logger.info '== url_for: ' + link_options.inspect
+        return link_options unless link_options.is_a?(Hash)
+        link_options = HashWithIndifferentAccess.new(link_options)
+        path = link_options.delete(:path) || request.path_info
+        params.delete('captures')
+        full_path = path + '?' + build_query(params.merge(link_options))
+        logger.info full_path
+        full_path
       end
 
       def ts(time)

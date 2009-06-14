@@ -1,5 +1,9 @@
 #db_menu
-  %h3=@db
+  %h3=@db.opts[:database]
   %ul
-    %li=link_to('Tables', db_url(@db))
+    %li= database_link('Tables', @db_key, 'tables')
+#debug
+  %h2 SQL
+  %p
+    =database_log.string.collect {|s| s.to_s + "<br/>"}
       
