@@ -34,15 +34,15 @@
     hideColumn: function(column_name) {
       var index = this.columnIndex(column_name);
       if (index == -1) return;
-      this.$table
-            .find('th:eq('+ index + ')').hide();
-      this.$table
-            .find('tr')
-            .each(function() {
-              $(this).find('td:eq('+ index + ')').hide();
-            });
+      this.selectColumn(index).hide();
       this.options.hidden[column_name] = true;
       this.setCookie();
+    },
+    
+    selectColumn: function(index) {
+      index++;
+      return this.$table
+                .find('tr td:nth-child('+ index + '), tr th:nth-child(' + index + ')');
     },
     
     columnIndex: function(column_name) {

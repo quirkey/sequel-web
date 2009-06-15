@@ -1,8 +1,8 @@
 %table.dataset.qtable
   %thead
     %tr
-    - @table.columns.each do |column|
-      %th=column
+      - @table.columns.each do |column|
+        %th=column
   %tbody
     - @rows.each do |row|
       %tr.data_item
