@@ -1,0 +1,17 @@
+%table#schema
+  %thead
+    %th Column
+    %th Type
+    %th Allow Null
+    %th Primary Key?
+    %th Default
+  %tbody
+    - @schema.each do |column_name, column|
+      %tr
+        %td= column_name
+        %td
+          = column[:type] 
+          = "(#{column[:db_type]})"
+        %td= column[:allow_null]
+        %td= column[:primary_key]
+        %td= column[:default]

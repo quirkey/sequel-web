@@ -56,6 +56,12 @@ module Sequel
         haml :table
       end
       
+     get '/database/:key/tables/:table/schema' do
+        load_database
+        @schema = @db.schema(params[:table])
+        haml :schema
+      end
+      
       get '/database/:key/query' do
         load_database
         haml :query
