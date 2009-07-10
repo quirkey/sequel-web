@@ -52,13 +52,15 @@ module Sequel
       get '/database/:key/tables/:table' do
         load_database
         @table = @db[params[:table].to_sym]
+        @primary_key = primary_key_for(params[:table])
+        logger.info "-- primary_key:" + @primary_key.inspect
         @rows = @table.paginate(page, per_page)
         haml :table
       end
       
      get '/database/:key/tables/:table/schema' do
         load_database
-        @schema = @db.schema(params[:table])
+        @schema = schema(params[:table])
         haml :schema
       end
       
@@ -117,6 +119,17 @@ module Sequel
         @db_key = connect(databases[params[:key]])
         not_found unless @db
         @db
+      end
+      
+      def schema(table = nil, reload = false)
+        @schemas ||= {}
+        @schemas[@db_key] = (@schemas[@db_key] && !reload) ? @schemas[@db_key] : @db.schema
+        table ? @schemas[@db_key][table] : @schemas[@db_key]
+      end
+      
+      def primary_key_for(table)
+        key = schema(table).find {|k,v| v[:primary_key] === true }
+        key ? key[0] : false
       end
       
       def page(default = 1)
