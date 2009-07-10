@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/test_helper'
 
 describe 'Sequel::Web' do
   before do    
@@ -46,7 +46,7 @@ describe 'Sequel::Web' do
 
       describe 'with illegitimate credentials' do
         before do
-          post '/connect', :connection => {:adapter => 'sqlite', :database => '/tmp/test_db.db'}
+          post '/connect', :connection => {:adapter => 'mysql', :database => '/tmp/test_db.db'}
         end
 
         it 'should redirect to index' do
@@ -54,7 +54,7 @@ describe 'Sequel::Web' do
         end
 
         it 'should put error in flash session' do
-          last_request.env['rack.session'][:__FLASH__][:warning].should.match(/Error/)
+          flash[:warning].should.match(/Error/)
         end
       end      
     end
@@ -70,6 +70,7 @@ describe 'Sequel::Web' do
         describe 'with a valid DB hash' do
           before do
             get "/database/#{@db_key}"
+            puts body.inspect
           end
 
           it 'displays list of tables' do

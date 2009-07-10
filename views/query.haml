@@ -1,0 +1,7 @@
+%form{:action => '', :method => 'post'}
+  %textarea.query{:name => 'query', :value => @query ? @query.sql : ''}
+  %input{:type => 'submit', :value => 'Query'}
+  
+  
+- if @rows
+  = haml :table, :layout => false

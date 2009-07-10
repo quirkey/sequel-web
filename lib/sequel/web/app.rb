@@ -52,10 +52,22 @@ module Sequel
       get '/database/:key/tables/:table' do
         load_database
         @table = @db[params[:table].to_sym]
-        @rows = @table.paginate(params[:page].to_i || 1, params[:per_page] || 10)
+        @rows = @table.paginate(page, per_page)
         haml :table
       end
       
+      get '/database/:key/query' do
+        load_database
+        haml :query
+      end      
+      
+      post '/database/:key/query' do
+        load_database
+        @query = @db[params[:query]]
+        logger.debug @query.inspect
+        @rows = @query.paginate(page, per_page)
+        haml :query
+      end
       
       protected
       
@@ -72,8 +84,9 @@ module Sequel
       end
       
       def connect(conn_string)
-        @db     = Sequel.connect(conn_string.merge(:loggers => [database_logger]))
+        @db     = Sequel.connect(conn_string.merge(:loggers => [database_logger, logger]))
         raise "Could not connect to database with credentials provided" unless @db
+        @db.tables # try to execute a query
         db_key = Digest::SHA1.hexdigest(@db.to_s)[0...10]
         self.databases[db_key] = {}.merge(conn_string)
         db_key
@@ -98,6 +111,14 @@ module Sequel
         @db_key = connect(databases[params[:key]])
         not_found unless @db
         @db
+      end
+      
+      def page(default = 1)
+        (params[:page] ? params[:page] : default).to_i
+      end
+      
+      def per_page(default = 10)
+        (params[:per_page] ? params[:per_page] : default).to_i
       end
       
     end

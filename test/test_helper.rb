@@ -31,6 +31,10 @@ module TestHelper
   def body
     last_response.body.to_s
   end
+  
+  def flash
+    last_request.env['rack.session'][:__FLASH__]
+  end
 
   def instance_of(klass)
     lambda {|obj| obj.is_a?(klass) }
