@@ -22,7 +22,10 @@ module Sequel
       end
       
       def database_link(text, db_key, path)
-        %{<a href='#{database_url(db_key, path)}'>#{text}</a>}
+        url = database_url(db_key, path)
+        logger.info "url: #{url}, path_info: #{request.path_info}"
+        active = ((url == request.path_info) ? 'active' : '')
+        %{<a href='#{url}' class="#{active}">#{text}</a>}
       end
                   
       get '/stylesheets/styles.css' do
@@ -92,11 +95,12 @@ module Sequel
         !!@db
       end
       
-      def connect(conn_string)
+      def connect(conn_string, db_key = nil)
         @db     = Sequel.connect(conn_string.merge(:loggers => [database_logger, logger]))
         raise "Could not connect to database with credentials provided" unless @db
         @db.tables # try to execute a query
-        db_key = Digest::SHA1.hexdigest(@db.to_s)[0...10]
+        
+        db_key ||= Digest::SHA1.hexdigest(@db.to_s)[0...10]
         self.databases[db_key] = {}.merge(conn_string)
         db_key
       rescue => e
@@ -117,7 +121,7 @@ module Sequel
       end
             
       def load_database
-        @db_key = connect(databases[params[:key]])
+        @db_key = connect(databases[params[:key]], params[:key])
         not_found unless @db
         @db
       end
