@@ -6,13 +6,20 @@
     
     %link{:rel => 'stylesheet', :type => 'text/css', :href => '/stylesheets/styles.css', :media => 'screen'}
     
-    - ['json2', 'jquery-1.3.1.min', 'jquery.cookies.2.0.1', 'qtable'].each do |src|
+    - ['json2', 'jquery-1.3.1.min', 'jquery.cookies.2.0.1', 'qtable', 'sequel-web'].each do |src|
       %script{:src => "/javascripts/#{src}.js", :type => 'text/javascript'}
   %body
-    - [:warning, :message].each do |flash_type|    
-      - if message = flash[flash_type]
-        .flash{:class => flash_type.to_s}
-          = message
-    - if connected? 
-      = haml :db_menu, :layout => false
-    = yield
+    #container
+      #header
+        %h1 sequel-web
+      - if connected? 
+        = haml :db_menu, :layout => false      
+      #main
+        = haml :flash, :layout => false
+        = yield
+      #footer
+        %p
+          Sequel::Web Version 
+          = Sequel::Web::VERSION + ". "
+          Sequel Version 
+          = Sequel::VERSION

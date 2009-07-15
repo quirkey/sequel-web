@@ -1,2 +1,140 @@
 body
   :font-family "Lucida Grande", Helvetica, Arial, sans-serif
+  :font-size 12px
+  :color #333
+  :margin 0
+  :padding 0
+
+a:link, a:visited 
+  :color #385A99
+  :text-decoration none
+a:hover
+  :text-decoration underline
+  :color #2F4565
+  
+#header
+  :background #333
+  :color #FFF
+  h1
+    :margin 0px
+    :padding 10px
+    :font-size 22px
+    :font-weight normal
+
+#db_menu
+  :background #2D2D2D
+  h3, h4, ul
+    :font-size 14px
+    :float left
+    :margin 0
+  h3
+    :background #6E7B8F
+    :color #DEDEDE
+    :padding 4px
+    span
+      :color #6E7B8F
+      :left 10px
+  h4
+    :background #48505D
+    :color #DEDEDE
+    :padding 4px
+  ul
+    :list-style none
+    :padding 0
+    li
+      :float left
+      :padding 0px
+      :margin 0px
+      a
+        :display block
+        :padding 4px 8px
+        :color #DEDEDE
+      a:hover
+        :text-decoration none
+        :color #385A99
+        :background #D3D3D3
+
+#main
+  :padding 10px
+  h2 
+    :border-bottom 1px solid #CCC
+    :width 100%
+  p
+    :padding 0px 0px 10px 0px
+    label
+      :float left
+      :width 120px
+      :color #545454
+  input[type=text], input[type=password], textarea
+    :padding 4px 2px
+    :font-family "Lucida Grande", Helvetica, Arial, sans-serif
+    :border 1px solid #333
+  input[type=submit], input[type=button]
+    :font-weight bold
+    :padding 4px 6px
+    :font-size 13px
+    :background #333
+    :color #FFF
+    :border 1px solid #CCC
+
+#footer
+  :padding 10px
+  :border-top 1px solid #CCC
+  :font-size 12px
+  :color #545454
+  
+
+#container .preferences
+  :position relative
+  span
+    a
+      :font-size 14px
+      :color #FFF
+      :cursor pointer
+      :display block
+      :padding 4px 10px
+      &:hover
+        :text-decoration none
+  &.active
+    span
+      a
+      :background #EFEFEF
+      :color #333
+  ul
+    :position absolute
+    :top 14px
+    :left 0px
+    :background #EFEFEF
+    :margin 0px
+    :padding 0px
+    :list-style none
+    li
+      :padding 0px
+      :margin 0px
+      a 
+        :display block
+        :padding 2px
+        :font-size 12px
+        :color #333
+        :white-space nowrap
+        :border-bottom 1px solid #CCC
+        &:hover
+          :background #CCC
+          :text-decoration none
+
+#db_menu
+  .preferences
+    :float left
+
+.flash
+  :width 100%
+  :background #D4CAA0
+  :color #333
+  :padding 6px
+  :font-weight norml
+  :font-size 12px
+  
+.clear
+  :clear both
+  :line-height 0px
+    

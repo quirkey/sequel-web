@@ -51,8 +51,9 @@ module Sequel
       
       get '/database/:key/tables/:table' do
         load_database
-        @table = @db[params[:table].to_sym]
-        @primary_key = primary_key_for(params[:table])
+        @table_name = params[:table]
+        @table = @db[@table_name.to_sym]
+        @primary_key = primary_key_for(@table_name)
         logger.info "-- primary_key:" + @primary_key.inspect
         @rows = @table.paginate(page, per_page)
         haml :table

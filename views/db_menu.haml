@@ -1,9 +1,22 @@
 #db_menu
-  %h3=@db.opts[:database]
+  .preferences
+    %span
+      %a{:href => '#', :title => 'Toggle Preferences'}= "*"
+    %ul
+      %li
+        %a{:href => '#:sql-log/toggle'} Show SQL Log
+  %h3
+    =@db.opts[:database]
   %ul
     %li= database_link('Tables', @db_key, 'tables')
-#debug
-  %h2 SQL
+    %li= database_link('Query', @db_key, 'query')
+  - if @table
+    %h4=@table_name
+    %ul
+      %li=database_link('Browse', @db_key, "tables/#{@table_name}")
+      %li=database_link('Schema', @db_key, "tables/#{@table_name}/schema")
+  .clear
+#sql_log
+  %h2 SQL Log
   %p
     =database_log.string.collect {|s| s.to_s + "<br/>"}
-      
