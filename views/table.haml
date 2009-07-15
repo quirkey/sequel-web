@@ -1,11 +1,17 @@
 %table.dataset.qtable
   %thead
     %tr
+      %th
+        
+      %th=""
       - @rows.columns.each do |column|
         %th=column
   %tbody
     - @rows.each do |row|
       %tr.data_item{:class => cycle('alt', '')}
+        %td
+          %input{:type => 'checkbox', :name => 'records[]', :value => row[@primary_key]}
+        %td=database_link('&raquo;', @db_key, "tables/#{@table_name}/record/#{row[@primary_key]}")
         - @rows.columns.each do |column|
           %td=row[column]
 

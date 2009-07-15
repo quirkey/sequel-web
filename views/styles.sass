@@ -54,10 +54,12 @@ h2
         :display block
         :padding 4px 8px
         :color #DEDEDE
-      a:hover
-        :text-decoration none
-        :color #385A99
-        :background #D3D3D3
+        &.active
+          :background #333
+        &:hover
+          :text-decoration none
+          :color #385A99
+          :background #D3D3D3
 
 #main
   :padding 10px
@@ -137,7 +139,7 @@ h2
   .preferences
     :float left
     ul
-      :top 20px
+      :top 27px
 
 table
   :width 100%
@@ -167,6 +169,10 @@ table
     &.current 
       :color #333
 
+textarea.query
+  :width 100%
+  :height 100px
+  
 
 .flash
   :width 100%
@@ -175,7 +181,10 @@ table
   :padding 6px
   :font-weight norml
   :font-size 12px
-  
+  &.warning
+    :background #810F0C
+    :color #FFF
+    
 .clear
   :clear both
   :line-height 0px
