@@ -59,7 +59,7 @@
     
     cookieName: function() {
       return 'qtable';
-    },
+    }
     
   });
 

@@ -5,7 +5,7 @@
         %th=column
   %tbody
     - @rows.each do |row|
-      %tr.data_item
+      %tr.data_item{:class => cycle('alt', '')}
         - @rows.columns.each do |column|
           %td=row[column]
 

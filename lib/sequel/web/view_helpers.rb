@@ -37,6 +37,12 @@ module Sequel
         logger.info full_path
         full_path
       end
+      
+      def cycle(on, off, name = :cycle)
+        @_cycle ||= {}
+        @_cycle[name] = !@_cycle[name]
+        @_cycle[name] ? on : off
+      end
 
       def ts(time)
         time.strftime('%b %d, %Y') if time

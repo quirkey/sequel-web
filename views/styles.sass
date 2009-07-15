@@ -11,6 +11,11 @@ a:link, a:visited
 a:hover
   :text-decoration underline
   :color #2F4565
+
+h2 
+  :border-bottom 1px solid #CCC
+  :padding 2px 4px
+  :width 100%
   
 #header
   :background #333
@@ -56,9 +61,6 @@ a:hover
 
 #main
   :padding 10px
-  h2 
-    :border-bottom 1px solid #CCC
-    :width 100%
   p
     :padding 0px 0px 10px 0px
     label
@@ -122,9 +124,49 @@ a:hover
           :background #CCC
           :text-decoration none
 
+#sql_log
+  :padding 10px
+  p
+    :font-family Monaco, Courier, serif
+    :font-size 12px
+    :background #EFEFEF
+    :border 1px solid #CCC
+    :padding 2px
+    
 #db_menu
   .preferences
     :float left
+    ul
+      :top 20px
+
+table
+  :width 100%
+  :border-collapse collapse
+  :text-align center
+  th, td
+    :border-bottom 1px solid #CCC
+    :padding 6px
+    :border-bottom 1px solid #CCC
+  th
+    :font-weight bold
+    :color #666
+  .alt
+    :background #EBE5FF
+
+.pagination 
+  :width 100%
+  :text-align right
+  :margin 0px 0px 20px 0px
+  :padding 4px 0px
+  :background #F7F7F7
+  :display block
+  :color #CCC
+  :font-weight bold
+  a, span 
+    :padding 0px 5px
+    &.current 
+      :color #333
+
 
 .flash
   :width 100%
