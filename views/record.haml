@@ -2,5 +2,5 @@
   %form{:action => '#', :method => 'post'}
     %input{:type => 'hidden', :name => '_method', :value => 'put'}
     - @table.columns.each do |column|
-      =text_field("record[#{column}]", :title => column, :value => @record[column])
+      = input_for_column(@record, @table_name, column)
     %input{:type => 'submit', :value => 'Save'}

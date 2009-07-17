@@ -26,6 +26,17 @@ module Sequel
         html << "<input type='text' name='#{name}' value='#{value}' /></p>"
         html 
       end
+      
+      def input_for_column(row, table_name, column, options = {})
+        prefix = options[:prefix] || "record"
+        column_type = @db.schema(table_name).detect {|c| c[0] == column.to_sym }[1][:type]
+        case column_type
+        when :datetime
+          text_field("#{prefix}[#{column}]", :title => column, :value => Time.parse(row[column].to_s).to_s(:db))
+        else
+          text_field("#{prefix}[#{column}]", :title => column, :value => row[column])
+        end
+      end
 
       def url_for(link_options)
         logger.info '== url_for: ' + link_options.inspect

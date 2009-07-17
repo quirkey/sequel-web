@@ -73,15 +73,20 @@ module Sequel
       end
 
       put '/database/:key/tables/:table/record/:id' do
-        load_database
-        @table_name = params[:table]
-        @table = @db[@table_name.to_sym]
-        @primary_key = primary_key_for(@table_name)
-        logger.info "-- primary_key:" + @primary_key.inspect
-        @record = @table.filter({@primary_key => params[:id]})
-        @record.update(params[:record])
-        @record = @record.first
-        haml :record
+        begin
+          load_database
+          @table_name = params[:table]
+          @table = @db[@table_name.to_sym]
+          @primary_key = primary_key_for(@table_name)
+          logger.info "-- primary_key:" + @primary_key.inspect
+          @record = @table.filter({@primary_key => params[:id]})
+          @record.update(params[:record]) if params[:record]
+          flash[:message] = "Record updated successfully"
+        rescue => e
+          flash[:warning] = "Record could not be updated: #{e}"
+        ensure
+          haml :record
+        end
       end
 
       get '/database/:key/tables/:table/schema' do
