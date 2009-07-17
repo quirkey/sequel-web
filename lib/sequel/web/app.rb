@@ -81,12 +81,12 @@ module Sequel
           logger.info "-- primary_key:" + @primary_key.inspect
           @record = @table.filter({@primary_key => params[:id]})
           @record.update(params[:record]) if params[:record]
+          @record = @record.first
           flash[:message] = "Record updated successfully"
         rescue => e
           flash[:warning] = "Record could not be updated: #{e}"
-        ensure
-          haml :record
         end
+        haml :record
       end
 
       get '/database/:key/tables/:table/schema' do

@@ -32,7 +32,8 @@ module Sequel
         column_type = @db.schema(table_name).detect {|c| c[0] == column.to_sym }[1][:type]
         case column_type
         when :datetime
-          text_field("#{prefix}[#{column}]", :title => column, :value => Time.parse(row[column].to_s).to_s(:db))
+          value = row[column].is_a?(Time) ? row[column].to_s(:db) : row[column]
+          text_field("#{prefix}[#{column}]", :title => column, :value => value)
         else
           text_field("#{prefix}[#{column}]", :title => column, :value => row[column])
         end
