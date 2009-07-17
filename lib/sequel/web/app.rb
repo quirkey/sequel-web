@@ -72,6 +72,18 @@ module Sequel
         haml :record
       end
 
+      put '/database/:key/tables/:table/record/:id' do
+        load_database
+        @table_name = params[:table]
+        @table = @db[@table_name.to_sym]
+        @primary_key = primary_key_for(@table_name)
+        logger.info "-- primary_key:" + @primary_key.inspect
+        @record = @table.filter({@primary_key => params[:id]})
+        @record.update(params[:record])
+        @record = @record.first
+        haml :record
+      end
+
       get '/database/:key/tables/:table/schema' do
         load_database
         @schema = schema(params[:table])
