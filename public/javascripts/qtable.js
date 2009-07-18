@@ -7,12 +7,12 @@
   });
   
   function QTable(table) {
-    console.log('qtable init', table);
+    // console.log('qtable init', table);
     this.$table = $(table);
     this.column_names = this.$table
       .find('thead th')
       .map(function() { return $(this).text(); });
-    console.log('qtable', this);
+    // console.log('qtable', this);
     this.options = this.getCookie();
     this.hideColumns();
   }

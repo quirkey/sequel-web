@@ -77,7 +77,7 @@
     
   SequelWeb.Preferences
     .bind('show-sql-log', function(value) {
-      console.log('triggerering show-sql-log', value);
+      // console.log('triggerering show-sql-log', value);
       var $sql_log = $('#sql_log');
       if (value) {
         $sql_log.show('fast');
@@ -122,7 +122,7 @@
         var setting = $(this).attr('href').replace(/^\#\:/, '').split('/');
         var event_name = setting[0];
         var action     = setting[1];
-        console.log('triggering', event_name, this);
+        // console.log('triggering', event_name, this);
         SequelWeb.Preferences.toggle(event_name).trigger(event_name);
         $(this).parents('.preferences').trigger('hide');
       });
