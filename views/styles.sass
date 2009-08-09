@@ -18,7 +18,7 @@ h2
   :width 100%
   
 #header
-  :background #333
+  :background #505050
   :color #FFF
   h1
     :margin 0px
@@ -55,7 +55,7 @@ h2
         :padding 4px 8px
         :color #DEDEDE
         &.active
-          :background #333
+          :background #505050
         &:hover
           :text-decoration none
           :color #385A99
@@ -68,18 +68,25 @@ h2
     label
       :float left
       :width 120px
+      :padding 5px 0px
       :color #545454
+      :font-weight bold
   input[type=text], input[type=password], textarea
     :padding 4px 2px
     :font-family "Lucida Grande", Helvetica, Arial, sans-serif
-    :border 1px solid #333
+    :border 1px solid #505050
+    :width 250px
   input[type=submit], input[type=button]
     :font-weight bold
-    :padding 4px 6px
+    :padding 4px 15px
     :font-size 13px
     :background #333
     :color #FFF
     :border 1px solid #CCC
+  fieldset
+    :border 1px solid #CCC
+    :background #ECECEC
+    
 
 #footer
   :padding 10px
@@ -156,6 +163,7 @@ table
     :text-align left
   .alt
     :background #F5F5F5
+  
 
 .pagination 
   :width 100%

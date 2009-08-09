@@ -5,7 +5,7 @@
         
       %th=""
       - @rows.columns.each do |column|
-        %th=column
+        %th=sortable_column(column)
   %tbody
     - @rows.each do |row|
       %tr.data_item{:class => cycle('alt', '')}

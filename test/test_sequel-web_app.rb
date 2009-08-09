@@ -35,7 +35,7 @@ describe 'Sequel::Web' do
     describe 'post /connect' do
       describe 'with legitimate credentials' do
         before do
-          post '/connect', :connection => {:adapter => 'sqlite', :database => '/tmp/test_db.db'}
+          post '/connect', :connection => {:adapter => 'sqlite', :database => @test_db_path}
         end
 
         it 'redirects to database index' do
@@ -46,7 +46,7 @@ describe 'Sequel::Web' do
 
       describe 'with illegitimate credentials' do
         before do
-          post '/connect', :connection => {:adapter => 'mysql', :database => '/tmp/test_db.db'}
+          post '/connect', :connection => {:adapter => 'mysql', :database => @test_db_path}
         end
 
         it 'should redirect to index' do
@@ -61,18 +61,22 @@ describe 'Sequel::Web' do
 
     describe 'after connecting to a database' do
       before do
-        post '/connect', :connection => {:adapter => 'sqlite', :database => '/tmp/test_db.db'}
-        @db_key = last_response['Location'].gsub(/\/database\//,'')
+        post '/connect', :connection => {:adapter => 'sqlite', :database => @test_db_path}
+        @db_key       = last_response['Location'].gsub(/\/database\//,'')
+        @last_session = last_request.env['rack.session']
       end
 
       describe 'get /database' do
 
         describe 'with a valid DB hash' do
           before do
-            get "/database/#{@db_key}"
-            puts body.inspect
+            get "/database/#{@db_key}/tables", {}, {'rack.session' => @last_session}
           end
 
+          it 'should be successful' do
+            last_response.should.be.ok
+          end
+          
           it 'displays list of tables' do
             body.should.have_element('#tables td a', 'items')
           end
@@ -86,7 +90,7 @@ describe 'Sequel::Web' do
         describe 'get /database/table' do
           describe 'with an existing table' do
             before do
-              get "/database/#{@db_key}/tables/items"
+              get "/database/#{@db_key}/tables/items", {}, {'rack.session' => @last_session}
             end
 
             it 'displays paginated table of rows' do
@@ -101,7 +105,7 @@ describe 'Sequel::Web' do
 
           describe 'with a non existing table' do
             before do
-              get "/database/#{@db_key}/tables/blah"
+              get "/database/#{@db_key}/tables/blah", {}, {'rack.session' => @last_session}
             end
 
             it 'is a 404' do

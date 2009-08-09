@@ -27,6 +27,7 @@ module Sequel
         active = ((url == request.path_info) ? 'active' : '')
         %{<a href='#{url}' class="#{active}">#{text}</a>}
       end
+      
 
       get '/stylesheets/styles.css' do
         content_type 'text/css'
@@ -54,20 +55,14 @@ module Sequel
 
       get '/database/:key/tables/:table' do
         load_database
-        @table_name = params[:table]
-        @table = @db[@table_name.to_sym]
-        @primary_key = primary_key_for(@table_name)
-        logger.info "-- primary_key:" + @primary_key.inspect
+        load_table
         @rows = @table.paginate(page, per_page)
         haml :table
       end
 
       get '/database/:key/tables/:table/record/:id' do
         load_database
-        @table_name = params[:table]
-        @table = @db[@table_name.to_sym]
-        @primary_key = primary_key_for(@table_name)
-        logger.info "-- primary_key:" + @primary_key.inspect
+        load_table
         @record = @table.first({@primary_key => params[:id]})
         haml :record
       end
@@ -75,10 +70,7 @@ module Sequel
       put '/database/:key/tables/:table/record/:id' do
         begin
           load_database
-          @table_name = params[:table]
-          @table = @db[@table_name.to_sym]
-          @primary_key = primary_key_for(@table_name)
-          logger.info "-- primary_key:" + @primary_key.inspect
+          load_table
           @record = @table.filter({@primary_key => params[:id]})
           @record.update(params[:record]) if params[:record]
           @record = @record.first
@@ -91,7 +83,8 @@ module Sequel
 
       get '/database/:key/tables/:table/schema' do
         load_database
-        @schema = schema(params[:table])
+        load_table
+        @schema = @db.schema(@table_name)
         haml :schema
       end
 
@@ -156,15 +149,17 @@ module Sequel
         not_found unless @db
         @db
       end
-
-      def schema(table = nil, reload = false)
-        @schemas ||= {}
-        @schemas[@db_key] = (@schemas[@db_key] && !reload) ? @schemas[@db_key] : @db.schema
-        table ? @schemas[@db_key][table] : @schemas[@db_key]
+      
+      def load_table
+        @table_name = params[:table]
+        @table = @db[@table_name.to_sym]
+        @primary_key = primary_key_for(@table_name)
+        logger.info "-- primary_key:" + @primary_key.inspect
       end
 
       def primary_key_for(table)
-        key = schema(table).find {|k,v| v[:primary_key] === true }
+        @schema ||= @db.schema(table)
+        key = @schema.find {|k,v| v[:primary_key] === true }
         key ? key[0] : false
       end
 

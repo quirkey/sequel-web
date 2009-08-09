@@ -1,6 +1,8 @@
+%h2 Editing Record
 .record
   %form{:action => '#', :method => 'post'}
-    %input{:type => 'hidden', :name => '_method', :value => 'put'}
-    - @table.columns.each do |column|
-      = input_for_column(@record, @table_name, column)
+    %fieldset
+      %input{:type => 'hidden', :name => '_method', :value => 'put'}
+      - @table.columns.each do |column|
+        = input_for_column(@record, @table_name, column)
     %input{:type => 'submit', :value => 'Save'}

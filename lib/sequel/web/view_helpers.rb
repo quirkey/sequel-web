@@ -50,6 +50,10 @@ module Sequel
         full_path
       end
       
+      def sortable_column(column_name)
+        column_name
+      end
+      
       def cycle(on, off, name = :cycle)
         @_cycle ||= {}
         @_cycle[name] = !@_cycle[name]

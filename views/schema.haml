@@ -1,6 +1,6 @@
 %table#schema
   %thead
-    %th Column
+    %th.left Column
     %th Type
     %th Allow Null
     %th Primary Key?
@@ -8,7 +8,7 @@
   %tbody
     - @schema.each do |column_name, column|
       %tr
-        %td= column_name
+        %td.left= column_name
         %td
           = column[:type] 
           = "(#{column[:db_type]})"
