@@ -1,6 +1,19 @@
 %table#tables
+  %thead
+    %th.left Table name
+    %th Records
+    %th Columns
+    %th
   - @tables.each do |table|
     %tbody
       %tr
         %td.left
-          %a{:href => database_url(@db_key, "tables/#{table}")}= table
+          %a{:href => database_url(@db_key, "tables/#{table}")}
+            %strong
+              = table
+        %td= @db[table].count
+        %td= @db.schema(table).length
+        %td
+          %a{:href => database_url(@db_key, "tables/#{table}")} Browse
+          \/
+          %a{:href => database_url(@db_key, "tables/#{table}/schema")} Schema

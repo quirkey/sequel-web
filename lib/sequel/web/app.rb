@@ -27,7 +27,6 @@ module Sequel
         %{<a href='#{url}' class="#{active}">#{text}</a>}
       end
       
-
       get '/stylesheets/styles.css' do
         content_type 'text/css'
         sass :styles
@@ -55,6 +54,7 @@ module Sequel
       get '/database/:key/tables/:table' do
         load_database
         load_table
+        @table = @table.restful_query(params[:query]) if params[:query]
         @rows = @table.paginate(page, per_page)
         haml :table
       end

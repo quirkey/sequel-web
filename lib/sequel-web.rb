@@ -1,10 +1,11 @@
 require 'rubygems'
 require 'sequel'
-require 'sequel/extensions/pagination'
 require 'sinatra'
 require 'active_support'
 require 'haml'
 require 'sass'
+require 'sequel/extensions/pagination'
+require 'sequel/extensions/restful_query'
 require 'will_paginate'
 require 'will_paginate/view_helpers'
 
