@@ -1,6 +1,21 @@
 module Sequel
   module Web
     module ViewHelpers
+      extend Rack::Utils
+      
+      def build_query(params)
+        params.map { |k, v|
+          if v.is_a? Array
+            build_query(v.map { |x| [k, x] })
+          elsif v.is_a? Hash
+            build_query(v.map { |x, y| [[k].push(x).flatten, y]})
+          else
+            k = k.is_a?(Array) ? [escape(k.shift), k.map {|x| "[#{escape(x)}]"}].join('') : escape(k)
+            k + "=" + escape(v)
+          end
+        }.join("&")
+      end
+      module_function :build_query
 
       def tag_options(options, escape = true)
         option_string = options.collect {|k,v| %{#{k}="#{v}"}}.join(' ')
@@ -50,9 +65,20 @@ module Sequel
         full_path
       end
       
-      def sortable_column(column_name)
-        column_name
-      end
+      
+      def sortable_column_header(attribute_name, text = nil, options = {})
+        link_text = text || attribute_name.to_s.humanize
+        query_param = options[:query_param] || 'query'
+        query_parser = RestfulQuery::Parser.new(params[query_param])
+        logger.info 'params:' +  self.params[query_param].inspect
+        logger.info 'parser:' + query_parser.inspect
+        sorting_this = query_parser.sort(attribute_name)
+        logger.info "sorting #{attribute_name}:" + sorting_this.inspect
+        link_text << %{<span class="ui-icon ui-icon-triangle-1-#{sorting_this.direction == 'asc' ? 'n' : 's'}"></span>} if sorting_this
+        query_parser.clear_default_sort!
+        query_parser.set_sort(attribute_name, sorting_this ? sorting_this.next_direction : 'desc')
+        link_to(link_text, self.params.dup.merge(query_param => query_parser.to_query_hash), :class => 'sortable-column-header')
+      end      
       
       def cycle(on, off, name = :cycle)
         @_cycle ||= {}
