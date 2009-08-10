@@ -16,14 +16,13 @@ module Sequel
       before do
         @template = nil
       end
-
+            
       def database_url(db_key, path)
         "/database/#{db_key}/#{path}"
       end
 
       def database_link(text, db_key, path)
         url = database_url(db_key, path)
-        logger.info "url: #{url}, path_info: #{request.path_info}"
         active = ((url == request.path_info) ? 'active' : '')
         %{<a href='#{url}' class="#{active}">#{text}</a>}
       end
@@ -131,9 +130,9 @@ module Sequel
         flash[:warning] = "Error with connection: #{e}"
         redirect '/'
       end
-
+      
       def logger
-        @_logger ||= Logger.new(STDOUT)
+        @_logger ||= Logger.new(test? ? StringIO.new : STDOUT)
       end
 
       def database_logger
@@ -155,6 +154,9 @@ module Sequel
         @table = @db[@table_name.to_sym]
         @primary_key = primary_key_for(@table_name)
         logger.info "-- primary_key:" + @primary_key.inspect
+      rescue Sequel::Error => e
+        logger.error "Error while loading table: #{e}"
+        not_found
       end
 
       def primary_key_for(table)

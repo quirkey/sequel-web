@@ -5,14 +5,17 @@ describe 'Sequel::Web' do
     # set up temporary database
     @test_db_path = '/tmp/test_db.db'
     File.unlink(@test_db_path) if File.readable?(@test_db_path)
-    db = Sequel.connect("sqlite://#{@test_db_path}")
-    db.create_table :items do
+    @test_db = Sequel.connect("sqlite://#{@test_db_path}")
+    @test_db.create_table :items do
       primary_key :id
       String :name, :unique => true, :null => false
       boolean :active, :default => true
       Time :created_at
     end
-    db[:items].insert({:id => 1, :name => 'test', :active => true, :created_at => Time.now})
+    (1..20).each do |n|
+      @test_db[:items].insert({:id => n, :name => "test #{n}", :active => true, :created_at => Time.now})
+    end
+    
   end
 
   describe 'App' do
@@ -116,49 +119,70 @@ describe 'Sequel::Web' do
         
 
         describe 'get /database/table/schema' do
+          before do
+            get "/database/#{@db_key}/tables/items/schema", {}, {'rack.session' => @last_session}
+          end
           
           it 'should display schema as table' do
-            
+            body.should.have_element('table#schema')
           end
         end
 
-        describe 'get /database/table/row' do
+        describe 'get /database/table/record' do
+          before do
+            get "/database/#{@db_key}/tables/items/record/1", {}, {'rack.session' => @last_session}
+          end
+          
           it 'displays details for that row' do
-
+            body.should.have_element('.record')
+            body.should.have_element('input[value="test 1"]')
           end
 
           it 'has form for editing the row' do
-
+            body.should.have_element('.record form label', /name/)
           end
         end
 
         describe 'PUT /database/table/row' do
+          before do
+            put "/database/#{@db_key}/tables/items/record/1", {'record' => {'name' => 'test updating'}}, {'rack.session' => @last_session}
+          end
+                    
           it 'updates details for that row' do
-
+            @test_db[:items].filter(:id => 1).first[:name].should.equal 'test updating'
           end
 
           it 'has flash message' do
-            
+            flash[:message].should.match /success/
           end
           
           it 'displays form with updated data' do
-
+            body.should.have_element('.record form input[name="record[name]"][value="test updating"]')
           end
         end
 
         describe 'get /database/query' do
+          before do
+            get "/database/#{@db_key}/query", {}, {'rack.session' => @last_session}
+          end
+          
           it 'displays form for entering sql' do
-
+            body.should.have_element('textarea.query')
           end
         end
 
         describe 'post /database/query' do
+          before do
+            @query = 'SELECT * from items where active = \'1\''
+            post "/database/#{@db_key}/query", {'query' => @query}, {'rack.session' => @last_session}
+          end
+          
           it 'shows original query in form' do
-
+            body.should.have_element('textarea.query', @query)
           end
 
           it 'shows table with results' do
-
+            body.should.have_element('table.dataset')
           end
         end
       end
