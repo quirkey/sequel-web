@@ -1,11 +1,10 @@
 %table.dataset.qtable
   %thead
     %tr
-      %th
-        
-      %th=""
+      %th.ui-state-default=""   
+      %th.ui-state-default=""
       - @rows.columns.each do |column|
-        %th=sortable_column_header(column)
+        %th.sortable.ui-state-default=sortable_column_header(column)
   %tbody
     - @rows.each do |row|
       %tr.data_item{:class => cycle('alt', '')}

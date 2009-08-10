@@ -52,7 +52,7 @@ module Sequel
       
       
       def sortable_column_header(attribute_name, text = nil, options = {})
-        link_text = text || attribute_name.to_s.humanize
+        link_text = text || attribute_name.to_s
         query_param = options[:query_param] || 'query'
         query_parser = RestfulQuery::Parser.new(params[query_param])
         logger.info 'params:' +  self.params[query_param].inspect

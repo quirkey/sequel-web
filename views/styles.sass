@@ -159,19 +159,25 @@ table
   th, td
     :border-bottom 1px solid #CCC
     :padding 6px
-    :border-bottom 1px solid #CCC
   th
     :font-weight bold
     :color #666
     :background #EFEFEF
-    :border-left 1px solid #CCC
-    :border-right 1px solid #CCC
-    &:hover
-      :background #DDD
-    a
-      :display block
-      &:hover
-        :text-decoration none      
+    &.ui-state-default
+      :border none
+      :border-bottom 1px solid #CCC
+    &.ui-state-hover
+      :border none
+    &.sortable
+      :padding 0px
+      :border-left 1px solid #CCC
+      :border-right 1px solid #CCC
+      a
+        :display block
+        :padding 6px
+        &:hover
+          :text-decoration none      
+          :background #DDD
     .ui-icon
       :float right
   .left 
@@ -208,4 +214,30 @@ table
 .clear
   :clear both
   :line-height 0px
+
+table th .qtable-menu-toggle
+  :position relative
+  :left 0px
+  :float none
+  :cursor pointer
+.qtable-menu
+  :position absolute
+  :background #EFEFEF
+  :text-align left
+  :border-left 1px solid #CCC
+  :border-right 1px solid #CCC
+  :border-bottom 1px solid #CCC
+  h4 
+    :color #333
+    :margin 0px
+    :padding 4px 2px
+  ul
+    :padding 0px
+    :margin 0px
+    :list-style-type none
+    :border-bottom 1px solid #E7E7E7
+    li
+      :border-top 1px solid #E7E7E7
+      :padding 6px 20px 6px 2px
+      :cursor pointer
     
