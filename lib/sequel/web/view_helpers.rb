@@ -54,7 +54,7 @@ module Sequel
       def sortable_column_header(attribute_name, text = nil, options = {})
         link_text = text || attribute_name.to_s
         query_param = options[:query_param] || 'query'
-        query_parser = RestfulQuery::Parser.new(params[query_param])
+        query_parser = RestfulQuery::Parser.new(HashWithIndifferentAccess.new(params[query_param]))
         logger.info 'params:' +  self.params[query_param].inspect
         logger.info 'parser:' + query_parser.inspect
         sorting_this = query_parser.sort(attribute_name)
@@ -63,7 +63,7 @@ module Sequel
         query_parser.clear_default_sort!
         query_parser.set_sort(attribute_name, sorting_this ? sorting_this.next_direction : 'desc')
         link_to(link_text, self.params.dup.merge(query_param => query_parser.to_query_hash), :class => 'sortable-column-header')
-      end      
+      end
       
       def cycle(on, off, name = :cycle)
         @_cycle ||= {}

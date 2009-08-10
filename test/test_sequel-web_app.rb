@@ -35,6 +35,18 @@ describe 'Sequel::Web' do
 
     end
 
+    describe 'get /quick' do
+      before do
+        get '/quick', :db => "sqlite:///#{@test_db_path}"
+      end
+      
+      it 'redirects to database index' do
+        last_response.should.be.redirect
+        last_response.location.should.match /database\/[\w\d]+/
+      end
+      
+    end
+
     describe 'post /connect' do
       describe 'with legitimate credentials' do
         before do
@@ -142,8 +154,25 @@ describe 'Sequel::Web' do
             body.should.have_element('.record form label', /name/)
           end
         end
+        
+        describe 'get /database/table/record with multiple records' do
+          before do
+            get "/database/#{@db_key}/tables/items/records/1,2,3", {}, {'rack.session' => @last_session}
+          end
+          
+          
+          it 'displays details for that row' do
+            body.should.have_element('.record')
+            body.should.have_element('input[value="test 1"]')
+          end
 
-        describe 'PUT /database/table/row' do
+          it 'has form for editing the rows' do
+            body.should.have_element('.record form label', /name/)
+            body.should.have_element('.record input[name="record[1][name]"]')
+          end
+        end
+
+        describe 'PUT /database/table/record' do
           before do
             put "/database/#{@db_key}/tables/items/record/1", {'record' => {'name' => 'test updating'}}, {'rack.session' => @last_session}
           end

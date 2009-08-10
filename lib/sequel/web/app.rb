@@ -36,6 +36,11 @@ module Sequel
         haml :index
       end
 
+      get '/quick' do
+        key = connect(URI.parse(params[:db]))
+        redirect "/database/#{key}"
+      end
+
       post '/connect' do
         key = connect(params[:connection])
         redirect "/database/#{key}"
@@ -63,6 +68,14 @@ module Sequel
         load_database
         load_table
         @record = @table.first({@primary_key => params[:id]})
+        haml :record
+      end
+
+      get '/database/:key/tables/:table/records/:ids' do
+        load_database
+        load_table
+        ids = params[:ids].split(',')
+        @records = @table.filter({@primary_key => ids}).all
         haml :record
       end
 
