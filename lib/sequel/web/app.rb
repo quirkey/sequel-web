@@ -215,7 +215,7 @@ module Sequel
         (params[:page] ? params[:page] : default).to_i
       end
 
-      def per_page(default = 10)
+      def per_page(default = 20)
         (params[:per_page] ? params[:per_page] : default).to_i
       end
 

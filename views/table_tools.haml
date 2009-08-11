@@ -1,0 +1,11 @@
+.tools
+  .select
+    %label{:for => 'qtable_select_toggle'} Select: 
+    %input{:id => 'qtable_select_toggle', :type => 'checkbox', :class => 'qtable-select-toggle'}
+  .with-selected
+    %form{:method => 'get', :action => database_url(@db_key, "tables/#{@table_name}/records")}
+      %input{:type => 'button', :name => 'edit', :value => 'Edit'}
+      %input{:type => 'button', :name => 'delete', :value => 'Delete'}
+    
+  =will_paginate(@rows)
+  .clear="&nbsp;"
