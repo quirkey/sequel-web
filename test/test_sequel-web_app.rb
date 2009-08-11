@@ -172,7 +172,7 @@ describe 'Sequel::Web' do
           end
         end
 
-        describe 'PUT /database/table/records with multiple records' do
+        describe 'put /database/table/records with multiple records' do
           before do
             put "/database/#{@db_key}/tables/items/records/1,2", {'record' => {'1' => {'name' => 'test updating'}, '2' => {'active' => false}}}, {'rack.session' => @last_session}
           end
@@ -189,7 +189,26 @@ describe 'Sequel::Web' do
           it 'displays form with updated data' do
             body.should.have_element('.record form input[name="record[1][name]"][value="test updating"]')
           end
-        end       
+        end  
+        
+        describe 'delete /database/table/records with multiple records' do
+          before do
+            @original_count = @test_db[:items].count
+            delete "/database/#{@db_key}/tables/items/records/11,12", {}, {'rack.session' => @last_session}
+          end
+          
+          it 'deletes the records' do
+            @test_db[:items].count.should.equal (@original_count - 2)
+          end 
+          
+          it 'should have flash message' do
+            flash[:message].should.match /deleted/
+          end
+          
+          it 'should redirect to browse' do
+            last_response.should.be.redirect
+          end
+        end
 
         describe 'get /database/query' do
           before do

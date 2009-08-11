@@ -101,17 +101,28 @@ module Sequel
           @records = []
           ids.each do |i|          
             record = @table.filter({@primary_key => i})
-            logger.info "== record" + record.inspect
             record.update(params[:record][i]) if params[:record][i]
             @records << record.first
           end
           @records.compact!
-          logger.info "=records " + @records.inspect
           flash[:message] = "Record updated successfully"
         rescue Sequel::Error => e
           flash[:warning] = "Record could not be updated: #{e}"
         end
         haml :records
+      end
+      
+      delete '/database/:key/tables/:table/records/:ids' do
+        begin
+          load_database
+          load_table
+          ids = params[:ids].split(',').compact
+          @table.filter({@primary_key => ids}).delete
+          flash[:message] = "#{ids.length} records deleted."
+        rescue Sequel::Error => e
+          flash[:warning] = "Record could not be updated: #{e}"
+        end
+        redirect database_url(@db_key, "tables/#{@table_name}")
       end
 
       get '/database/:key/tables/:table/schema' do
