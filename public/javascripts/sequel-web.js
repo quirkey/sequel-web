@@ -132,7 +132,7 @@
 
 
       // qtable
-      $('.qtable-select-toggle')
+     $('.qtable-select-toggle')
       .bind('check', function() {
         $(this).parents('#main').find('.qtable :checkbox').attr('checked', 'checked');
       })
@@ -160,11 +160,13 @@
       .bind('submit', function(e) {
         e.preventDefault();
         var id_list = [];
-        $('.qtable [name="records[]"]:checked').each(function() { id_list.push($(this).val()); });
+        $('.qtable [name="records[]"]:checked')
+          .each(function() { id_list.push($(this).val()); });
         var base_url = $(this).parents('form').attr('action');
         switch($(this).attr('name')) {
           case 'edit':
           window.location = base_url + '/' + id_list.join(',');
+          break;
           case 'delete':
           if (confirm("Are you sure you want to delete these " + id_list.length +" record(s)? There is no undo.")) {
             $(this).parents('form')
@@ -175,6 +177,7 @@
           } else {
             alert('Delete was canceled.')
           }
+          break;
           default:
           return;
         }
