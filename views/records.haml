@@ -2,5 +2,6 @@
 .record
   %form{:action => '#', :method => 'post'}
     %input{:type => 'hidden', :name => '_method', :value => 'put'}
-    = haml(:record_form, :layout => false, :locals => {:record => @record, :prefix => 'record'})
+    - @records.each do |record|
+      = haml(:record_form, :layout => false, :locals => {:record => record, :prefix => "record[#{record[@primary_key]}]"})
     %input{:type => 'submit', :value => 'Save'}

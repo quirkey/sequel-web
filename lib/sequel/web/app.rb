@@ -76,7 +76,7 @@ module Sequel
         load_table
         ids = params[:ids].split(',')
         @records = @table.filter({@primary_key => ids}).all
-        haml :record
+        haml :records
       end
 
       put '/database/:key/tables/:table/record/:id' do
@@ -87,10 +87,31 @@ module Sequel
           @record.update(params[:record]) if params[:record]
           @record = @record.first
           flash[:message] = "Record updated successfully"
-        rescue => e
+        rescue Sequel::Error => e
           flash[:warning] = "Record could not be updated: #{e}"
         end
         haml :record
+      end
+
+      put '/database/:key/tables/:table/records/:ids' do
+        begin
+          load_database
+          load_table
+          ids = params[:ids].split(',').compact
+          @records = []
+          ids.each do |i|          
+            record = @table.filter({@primary_key => i})
+            logger.info "== record" + record.inspect
+            record.update(params[:record][i]) if params[:record][i]
+            @records << record.first
+          end
+          @records.compact!
+          logger.info "=records " + @records.inspect
+          flash[:message] = "Record updated successfully"
+        rescue Sequel::Error => e
+          flash[:warning] = "Record could not be updated: #{e}"
+        end
+        haml :records
       end
 
       get '/database/:key/tables/:table/schema' do

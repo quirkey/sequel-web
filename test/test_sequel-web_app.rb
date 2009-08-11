@@ -174,11 +174,12 @@ describe 'Sequel::Web' do
 
         describe 'PUT /database/table/record' do
           before do
-            put "/database/#{@db_key}/tables/items/record/1", {'record' => {'name' => 'test updating'}}, {'rack.session' => @last_session}
+            put "/database/#{@db_key}/tables/items/records", {'record' => {'1' => {'name' => 'test updating'}, '2' => {'active' => false}}}, {'rack.session' => @last_session}
           end
                     
           it 'updates details for that row' do
             @test_db[:items].filter(:id => 1).first[:name].should.equal 'test updating'
+            @test_db[:items].filter(:id => 2).first[:active].should.equal false
           end
 
           it 'has flash message' do
@@ -186,7 +187,24 @@ describe 'Sequel::Web' do
           end
           
           it 'displays form with updated data' do
-            body.should.have_element('.record form input[name="record[name]"][value="test updating"]')
+            body.should.have_element('.record form input[name="record[1][name]"][value="test updating"]')
+          end
+        end       
+        
+        describe 'put /database/table/records' do
+          before do
+            put "/database/#{@db_key}/tables/items/records", {}, {'rack.session' => @last_session}
+          end
+          
+          
+          it 'displays details for that row' do
+            body.should.have_element('.record')
+            body.should.have_element('input[value="test 1"]')
+          end
+
+          it 'has form for editing the rows' do
+            body.should.have_element('.record form label', /name/)
+            body.should.have_element('.record input[name="record[1][name]"]')
           end
         end
 

@@ -1,0 +1,3 @@
+%fieldset
+  - @table.columns.each do |column|
+    = input_for_column(record, @table_name, column, :prefix => prefix)
