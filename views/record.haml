@@ -1,6 +1,0 @@
-%h2 Editing Record
-.record
-  %form{:action => '#', :method => 'post'}
-    %input{:type => 'hidden', :name => '_method', :value => 'put'}
-    = haml(:record_form, :layout => false, :locals => {:record => @record, :prefix => 'record'})
-    %input{:type => 'submit', :value => 'Save'}

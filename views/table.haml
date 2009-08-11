@@ -11,7 +11,9 @@
       %tr.data_item{:class => cycle('alt', '')}
         %td
           %input{:type => 'checkbox', :name => 'records[]', :value => row[@primary_key]}
-        %td=database_link('&raquo;', @db_key, "tables/#{@table_name}/record/#{row[@primary_key]}")
+        %td
+          %a{:href => database_url(@db_key, "tables/#{@table_name}/records/#{row[@primary_key]}")}
+            %span.ui-icon.ui-icon-pencil="&nbsp;"
         - @rows.columns.each do |column|
           %td=row[column]
 = haml(:table_tools, :layout => false)

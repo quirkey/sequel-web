@@ -65,33 +65,12 @@ module Sequel
         haml :table
       end
 
-      get '/database/:key/tables/:table/record/:id' do
-        load_database
-        load_table
-        @record = @table.first({@primary_key => params[:id]})
-        haml :record
-      end
-
       get '/database/:key/tables/:table/records/:ids' do
         load_database
         load_table
         ids = params[:ids].split(',')
         @records = @table.filter({@primary_key => ids}).all
         haml :records
-      end
-
-      put '/database/:key/tables/:table/record/:id' do
-        begin
-          load_database
-          load_table
-          @record = @table.filter({@primary_key => params[:id]})
-          @record.update(params[:record]) if params[:record]
-          @record = @record.first
-          flash[:message] = "Record updated successfully"
-        rescue Sequel::Error => e
-          flash[:warning] = "Record could not be updated: #{e}"
-        end
-        haml :record
       end
 
       put '/database/:key/tables/:table/records/:ids' do

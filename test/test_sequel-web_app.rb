@@ -139,21 +139,6 @@ describe 'Sequel::Web' do
             body.should.have_element('table#schema')
           end
         end
-
-        describe 'get /database/table/record' do
-          before do
-            get "/database/#{@db_key}/tables/items/record/1", {}, {'rack.session' => @last_session}
-          end
-          
-          it 'displays details for that row' do
-            body.should.have_element('.record')
-            body.should.have_element('input[value="test 1"]')
-          end
-
-          it 'has form for editing the row' do
-            body.should.have_element('.record form label', /name/)
-          end
-        end
         
         describe 'get /database/table/record with multiple records' do
           before do
