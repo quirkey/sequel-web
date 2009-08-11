@@ -1,6 +1,7 @@
 ;(function($) {
   
   SequelWeb = {};
+  
   SequelWeb.Preferences = {
     bindings: {},
     
@@ -128,6 +129,28 @@
       });
     
     SequelWeb.Preferences.applySettings();
+    
+    
+    // qtable
+    $('.qtable-select-toggle')
+      .bind('check', function() {
+        console.log('check');
+        $(this).parents('#main').find('.qtable :checkbox').attr('checked', 'checked');
+      })
+      .bind('uncheck', function() {
+        console.log('uncheck');
+        $(this).parents('#main').find('.qtable :checkbox').removeAttr('checked');
+      })
+      .bind('toggle', function() {
+        if ($(this).is(':checked')) {
+          $(this).trigger('check');
+        } else {
+          $(this).trigger('uncheck');
+        }
+      })
+      .bind('click', function() {
+        $(this).trigger('toggle');
+      });
   });
   
 })(jQuery);
