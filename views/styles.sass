@@ -90,6 +90,36 @@ h2
   textarea.query
     :width 100%
     :height 100px
+  .tools 
+    :background #F7F7F7
+    .select, .with-selected
+      :float left
+      :font-weight bold
+      :font-size 12px
+      :padding 4px 10px
+    input[type=submit], input[type=button]
+      :font-weight bold
+      :padding 2px 4px
+      :font-size 12px
+      :background #7E7E7E
+      :color #FFF
+      :border none
+    
+    .pagination 
+      :width 100%
+      :text-align right
+      :margin 0px
+      :padding 6px 0px
+      :background #F7F7F7
+      :display block
+      :color #CCC
+      :font-weight bold
+      a, span 
+        :padding 0px 5px
+        &.current 
+          :color #333
+
+  
   
     
 
@@ -186,21 +216,7 @@ table
   .alt
     :background #F5F5F5
   
-
-.pagination 
-  :width 100%
-  :text-align right
-  :margin 0px 0px 20px 0px
-  :padding 4px 0px
-  :background #F7F7F7
-  :display block
-  :color #CCC
-  :font-weight bold
-  a, span 
-    :padding 0px 5px
-    &.current 
-      :color #333
-  
+    
 
 .flash
   :background #E7E7B5
