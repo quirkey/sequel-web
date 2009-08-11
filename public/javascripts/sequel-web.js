@@ -166,8 +166,9 @@
           case 'edit':
           window.location = base_url + '/' + id_list.join(',');
           case 'delete':
-          if (confirm("Are you sure you want to delete these " + ids.length +" records? There is no undo.")) {
+          if (confirm("Are you sure you want to delete these " + id_list.length +" record(s)? There is no undo.")) {
             $(this).parents('form')
+              .attr('method', 'post')
               .attr('action', base_url + '/' + id_list.join(','))
               .prepend('<input type="hidden" name="_method" value="DELETE" />')
               .submit();

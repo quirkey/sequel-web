@@ -9,6 +9,7 @@ module Sequel
 
       set :sessions, true
       use Rack::Flash      
+      set :methodoverride, true
 
       set :root, File.join(File.dirname(__FILE__), '..', '..', '..')
       set :app_file, File.expand_path(__FILE__)
